@@ -1,0 +1,56 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+    }
+}
+
+group 'com.endofmaster'
+version '1.0.0'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.jfrog.bintray'
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven { url 'https://dl.bintray.com/endofmaster/maven' }
+}
+
+dependencies {
+    compile 'commons-codec:commons-codec:1.11'
+    compile 'org.apache.commons:commons-lang3:3.8.1'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
+    compile 'javax.servlet:javax.servlet-api:4.0.1'
+    compile 'org.apache.httpcomponents:httpclient:4.5.2'
+    compile 'org.apache.httpcomponents:httpmime:4.5.2'
+    compile 'com.endofmaster:commons-utils:1.0.2'
+
+    testCompile 'org.slf4j:slf4j-jdk14:1.7.25'
+    testCompile 'junit:junit:4.12'
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : '<bintrayUser>'
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : '<bintrayApiKey>'
+    configurations = ['archives']
+    dryRun = false //[Default: false] Whether to run this as dry-run, without deploying
+    publish = true //[Default: false] Whether version should be auto published after an upload
+    override = false //[Default: false] Whether to override version artifacts already published
+    pkg {
+        repo = 'maven'
+        name = project.name
+        userOrg = 'endofmaster'
+        licenses = ['Apache-2.0']
+        vcsUrl = "https://github.com/EndOfMaster/${project.name}/"
+        version {
+            name = project.version
+        }
+    }
+}
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
